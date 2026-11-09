@@ -101,35 +101,35 @@
 
   /* Base circle */
   .logo-base{
-    animation: windBase 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: windBase 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   }
 
-  /* 4 parts bay từ 4 phía hợp thể như gió thổi */
+  /* 4 parts bay từ 4 phía hợp thể như gió thổi chậm rãi, uyển chuyển */
   .logo-puzzle{
-    animation: windFromTop 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+    animation: windFromTop 2.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
   }
 
   .logo-assembling{
-    animation: windFromLeft 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+    animation: windFromLeft 2.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
   }
 
   .logo-badge{
-    animation: windFromRight 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
+    animation: windFromRight 2.9s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both;
   }
 
   .logo-subtitle{
-    animation: windFromBottom 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both;
+    animation: windFromBottom 2.8s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
   }
 
   /* Hiệu ứng chấn động nhẹ khi hợp thể thành 1 khối hoàn chỉnh */
   .avatar.assembled{
-    animation: mergePulse 0.5s ease-out 1.7s both;
+    animation: mergePulse 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 3.3s both;
   }
 
   @keyframes windBase {
     0% {
       opacity: 0;
-      transform: scale(0.65);
+      transform: scale(0.7);
     }
     100% {
       opacity: 1;
@@ -137,19 +137,25 @@
     }
   }
 
-  /* 1. Icon mảnh ghép: từ phía trên lượn gió bay xuống */
+  /* 1. Icon mảnh ghép: từ phía trên lượn gió bay xuống chậm rãi */
   @keyframes windFromTop {
     0% {
       opacity: 0;
-      transform: translate(-30px, -180px) rotate(-18deg) scale(0.55);
-      filter: blur(6px);
+      transform: translate(-35px, -190px) rotate(-20deg) scale(0.5);
+      filter: blur(5px);
     }
-    60% {
-      opacity: 0.95;
-      filter: blur(0.5px);
+    35% {
+      opacity: 0.6;
+      transform: translate(-20px, -100px) rotate(-12deg) scale(0.7);
+      filter: blur(3px);
     }
-    85% {
-      transform: translate(2px, 3px) rotate(1.5deg) scale(1.02);
+    70% {
+      opacity: 0.9;
+      transform: translate(-6px, -20px) rotate(-4deg) scale(0.92);
+      filter: blur(1px);
+    }
+    88% {
+      transform: translate(2px, 3px) rotate(1deg) scale(1.02);
       filter: blur(0);
     }
     100% {
@@ -159,19 +165,25 @@
     }
   }
 
-  /* 2. Chữ Assembling: từ phía bên trái lượn gió bay vào */
+  /* 2. Chữ Assembling: từ phía bên trái lượn gió bay vào chậm rãi */
   @keyframes windFromLeft {
     0% {
       opacity: 0;
-      transform: translate(-220px, -30px) rotate(15deg) scale(0.6);
-      filter: blur(7px);
+      transform: translate(-230px, -35px) rotate(18deg) scale(0.5);
+      filter: blur(6px);
     }
-    60% {
-      opacity: 0.95;
-      filter: blur(0.5px);
+    35% {
+      opacity: 0.6;
+      transform: translate(-120px, -18px) rotate(10deg) scale(0.72);
+      filter: blur(3px);
     }
-    85% {
-      transform: translate(3px, -1px) rotate(-1.5deg) scale(1.02);
+    70% {
+      opacity: 0.9;
+      transform: translate(-25px, -5px) rotate(3deg) scale(0.93);
+      filter: blur(1px);
+    }
+    88% {
+      transform: translate(3px, -1px) rotate(-1deg) scale(1.02);
       filter: blur(0);
     }
     100% {
@@ -181,19 +193,25 @@
     }
   }
 
-  /* 3. Badge with me hi: từ phía bên phải lượn gió bay vào */
+  /* 3. Badge with me hi: từ phía bên phải lượn gió bay vào chậm rãi */
   @keyframes windFromRight {
     0% {
       opacity: 0;
-      transform: translate(220px, 30px) rotate(-15deg) scale(0.6);
-      filter: blur(7px);
+      transform: translate(230px, 35px) rotate(-18deg) scale(0.5);
+      filter: blur(6px);
     }
-    60% {
-      opacity: 0.95;
-      filter: blur(0.5px);
+    35% {
+      opacity: 0.6;
+      transform: translate(120px, 18px) rotate(-10deg) scale(0.72);
+      filter: blur(3px);
     }
-    85% {
-      transform: translate(-3px, 1px) rotate(1.5deg) scale(1.02);
+    70% {
+      opacity: 0.9;
+      transform: translate(25px, 5px) rotate(-3deg) scale(0.93);
+      filter: blur(1px);
+    }
+    88% {
+      transform: translate(-3px, 1px) rotate(1deg) scale(1.02);
       filter: blur(0);
     }
     100% {
@@ -203,18 +221,24 @@
     }
   }
 
-  /* 4. Dòng chữ lắp cùng tớ shop đồ chơi: từ phía dưới lượn gió bay lên */
+  /* 4. Dòng chữ lắp cùng tớ shop đồ chơi: từ phía dưới lượn gió bay lên chậm rãi */
   @keyframes windFromBottom {
     0% {
       opacity: 0;
-      transform: translate(30px, 160px) rotate(12deg) scale(0.55);
-      filter: blur(6px);
+      transform: translate(35px, 170px) rotate(15deg) scale(0.5);
+      filter: blur(5px);
     }
-    60% {
-      opacity: 0.95;
-      filter: blur(0.5px);
+    35% {
+      opacity: 0.6;
+      transform: translate(18px, 90px) rotate(8deg) scale(0.7);
+      filter: blur(3px);
     }
-    85% {
+    70% {
+      opacity: 0.9;
+      transform: translate(5px, 18px) rotate(2deg) scale(0.92);
+      filter: blur(1px);
+    }
+    88% {
       transform: translate(-2px, -3px) rotate(-1deg) scale(1.02);
       filter: blur(0);
     }
