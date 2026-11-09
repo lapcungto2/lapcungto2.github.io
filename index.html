@@ -41,6 +41,10 @@
     height:100%;
     z-index:0;
     pointer-events:none;
+    filter: blur(32px);
+    -webkit-filter: blur(32px);
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
   }
 
   .page{
@@ -395,76 +399,106 @@
 (function(){
   var canvas = document.getElementById('bg-canvas');
   var ctx = canvas.getContext('2d');
-  var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var W, H;
-  var particles = [];
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var DOT_COLOR = 'rgba(17,17,17,0.30)';
-  var LINE_COLOR = '17,17,17';
-  var LINK_DIST = 140;
+  // Render at half-res for maximum silky 60/120fps performance + hardware blur
+  var SCALE = 0.5;
+
+  // 5 organic fluid blobs drifting in harmonic orbits
+  var blobs = [
+    { u: 0.25, v: 0.22, r: 0.45, speedX: 0.00042, speedY: 0.00055, phaseX: 0.0, phaseY: 1.2, color: 'rgba(255, 145, 30, 0.42)' },  // Warm amber
+    { u: 0.75, v: 0.35, r: 0.50, speedX: 0.00035, speedY: 0.00048, phaseX: 2.1, phaseY: 0.5, color: 'rgba(255, 235, 95, 0.55)' },  // Sun gold
+    { u: 0.50, v: 0.15, r: 0.38, speedX: 0.00050, speedY: 0.00038, phaseX: 4.0, phaseY: 2.8, color: 'rgba(255, 252, 225, 0.50)' }, // Pearl halo behind avatar
+    { u: 0.20, v: 0.78, r: 0.52, speedX: 0.00048, speedY: 0.00040, phaseX: 1.5, phaseY: 3.4, color: 'rgba(255, 115, 35, 0.36)' },  // Sunset coral
+    { u: 0.80, v: 0.82, r: 0.46, speedX: 0.00038, speedY: 0.00052, phaseX: 3.2, phaseY: 1.8, color: 'rgba(255, 210, 60, 0.48)' }   // Warm honey
+  ];
+
+  // Interactive mouse/touch gentle aura
+  var touch = { x: -1000, y: -1000, currX: -1000, currY: -1000, active: false };
 
   function resize(){
     W = window.innerWidth;
     H = window.innerHeight;
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
+    canvas.width = Math.max(1, Math.floor(W * SCALE));
+    canvas.height = Math.max(1, Math.floor(H * SCALE));
     canvas.style.width = W + 'px';
     canvas.style.height = H + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    var count = Math.min(150, Math.round((W * H) / 7000));
-    particles = [];
-    for (var i = 0; i < count; i++){
-      particles.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        vx: (Math.random() - 0.5) * 1.6,
-        vy: (Math.random() - 0.5) * 1.6,
-        r: Math.random() * 1.6 + 1.1
-      });
-    }
   }
 
-  function step(){
-    ctx.clearRect(0, 0, W, H);
+  function drawBlob(x, y, radius, color){
+    var grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
+    grad.addColorStop(0, color);
+    grad.addColorStop(1, 'rgba(241, 208, 42, 0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
 
-    for (var i = 0; i < particles.length; i++){
-      var p = particles[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < 0 || p.x > W) p.vx *= -1;
-      if (p.y < 0 || p.y > H) p.vy *= -1;
+  var startTime = performance.now();
 
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = DOT_COLOR;
-      ctx.fill();
+  function step(now){
+    var t = now - startTime;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    var baseDim = Math.min(canvas.width, canvas.height);
+
+    // Draw ambient floating fluid orbs
+    for (var i = 0; i < blobs.length; i++){
+      var b = blobs[i];
+      // Harmonic floating offset
+      var ox = Math.sin(t * b.speedX + b.phaseX) * (canvas.width * 0.16) + Math.cos(t * b.speedY * 0.7) * (canvas.width * 0.06);
+      var oy = Math.cos(t * b.speedY + b.phaseY) * (canvas.height * 0.16) + Math.sin(t * b.speedX * 0.7) * (canvas.height * 0.06);
+
+      var cx = b.u * canvas.width + ox;
+      var cy = b.v * canvas.height + oy;
+      var radius = b.r * baseDim * (1 + 0.12 * Math.sin(t * 0.0008 + i));
+
+      drawBlob(cx, cy, radius, b.color);
     }
 
-    for (var a = 0; a < particles.length; a++){
-      for (var b = a + 1; b < particles.length; b++){
-        var dx = particles[a].x - particles[b].x;
-        var dy = particles[a].y - particles[b].y;
-        var dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < LINK_DIST){
-          var opacity = (1 - dist / LINK_DIST) * 0.20;
-          ctx.beginPath();
-          ctx.moveTo(particles[a].x, particles[a].y);
-          ctx.lineTo(particles[b].x, particles[b].y);
-          ctx.strokeStyle = 'rgba(' + LINE_COLOR + ',' + opacity + ')';
-          ctx.lineWidth = 1;
-          ctx.stroke();
-        }
-      }
+    // Interactive pointer ripple
+    if (touch.active){
+      touch.currX += (touch.x - touch.currX) * 0.08;
+      touch.currY += (touch.y - touch.currY) * 0.08;
+      var touchR = baseDim * 0.40;
+      drawBlob(touch.currX * SCALE, touch.currY * SCALE, touchR, 'rgba(255, 248, 200, 0.45)');
     }
 
     if (!reduceMotion) requestAnimationFrame(step);
   }
 
+  // Pointer & touch events for fluid interaction
+  window.addEventListener('pointermove', function(e){
+    touch.x = e.clientX;
+    touch.y = e.clientY;
+    if (!touch.active){
+      touch.currX = touch.x;
+      touch.currY = touch.y;
+      touch.active = true;
+    }
+  });
+
+  window.addEventListener('pointerleave', function(){
+    touch.active = false;
+  });
+
+  window.addEventListener('touchmove', function(e){
+    if (e.touches && e.touches[0]){
+      touch.x = e.touches[0].clientX;
+      touch.y = e.touches[0].clientY;
+      if (!touch.active){
+        touch.currX = touch.x;
+        touch.currY = touch.y;
+        touch.active = true;
+      }
+    }
+  }, { passive: true });
+
   window.addEventListener('resize', resize);
   resize();
-  step();
+  requestAnimationFrame(step);
 })();
 </script>
 
