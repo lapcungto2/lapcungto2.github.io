@@ -105,124 +105,182 @@
 
   /* Base circle */
   .logo-base{
-    animation: windBase 1.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    opacity: 1;
   }
 
-  /* 4 parts bay từ 4 phía hợp thể mượt mà, tốc độ vừa phải, chuyển động liên tục */
+  /* 4 parts tự động tách ra và hợp thể tuần hoàn liên tục (Chu kỳ 7.0s, dừng hợp thể 3.5s) */
   .logo-puzzle{
-    animation: windFromTop 1.8s cubic-bezier(0.25, 1, 0.5, 1) 0.05s both;
+    animation: loopFromTop 7.0s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 
   .logo-assembling{
-    animation: windFromLeft 1.85s cubic-bezier(0.25, 1, 0.5, 1) 0.12s both;
+    animation: loopFromLeft 7.0s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 
   .logo-badge{
-    animation: windFromRight 1.85s cubic-bezier(0.25, 1, 0.5, 1) 0.18s both;
+    animation: loopFromRight 7.0s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 
   .logo-subtitle{
-    animation: windFromBottom 1.8s cubic-bezier(0.25, 1, 0.5, 1) 0.25s both;
+    animation: loopFromBottom 7.0s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 
-  /* Hiệu ứng chấn động nhẹ khi vừa hợp thể xong */
-  .avatar.assembled{
-    animation: mergePulse 0.5s cubic-bezier(0.25, 1, 0.5, 1) 2.05s both;
+  /* Avatar nhịp thở nhẹ ăn khớp khi vừa hợp thể xong */
+  .avatar{
+    animation: avatarLoopPulse 7.0s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 
-  @keyframes windBase {
-    0% {
-      opacity: 0;
-      transform: scale(0.75);
-    }
-    100% {
-      opacity: 1;
+  @keyframes avatarLoopPulse {
+    0%, 20% {
       transform: scale(1);
+      box-shadow: var(--shadow);
+    }
+    23% {
+      transform: scale(1.04);
+      box-shadow: 0 10px 28px rgba(17,17,17,0.18), 0 0 20px rgba(255,255,255,0.7);
+    }
+    26%, 100% {
+      transform: scale(1);
+      box-shadow: var(--shadow);
     }
   }
 
-  /* 1. Icon mảnh ghép: từ trên lượn gió bay xuống liên tục, mượt mà */
-  @keyframes windFromTop {
+  /* 1. Mảnh ghép icon: bay vào từ trên -> dừng 3.5s -> bay ra -> lặp lại */
+  @keyframes loopFromTop {
     0% {
       opacity: 0;
       transform: translate(-25px, -150px) rotate(-14deg) scale(0.65);
       filter: blur(4px);
     }
-    25% {
+    7% {
       opacity: 0.85;
     }
-    100% {
+    21.5% {
       opacity: 1;
       transform: translate(0, 0) rotate(0deg) scale(1);
       filter: blur(0);
     }
+    /* Dừng hoàn chỉnh 3.5s để nhìn rõ logo */
+    71.5% {
+      opacity: 1;
+      transform: translate(0, 0) rotate(0deg) scale(1);
+      filter: blur(0);
+    }
+    /* Tách ra bay lướt ra ngoài */
+    88% {
+      opacity: 0;
+      transform: translate(-25px, -150px) rotate(-14deg) scale(0.65);
+      filter: blur(4px);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-25px, -150px) rotate(-14deg) scale(0.65);
+      filter: blur(4px);
+    }
   }
 
-  /* 2. Chữ Assembling: từ bên trái lượn gió bay vào liên tục, mượt mà */
-  @keyframes windFromLeft {
+  /* 2. Chữ Assembling: bay vào từ bên trái -> dừng 3.5s -> bay ra -> lặp lại */
+  @keyframes loopFromLeft {
     0% {
       opacity: 0;
       transform: translate(-180px, -20px) rotate(12deg) scale(0.65);
       filter: blur(4px);
     }
-    25% {
+    7% {
       opacity: 0.85;
     }
-    100% {
+    21.5% {
       opacity: 1;
       transform: translate(0, 0) rotate(0deg) scale(1);
       filter: blur(0);
     }
+    /* Dừng hoàn chỉnh 3.5s */
+    71.5% {
+      opacity: 1;
+      transform: translate(0, 0) rotate(0deg) scale(1);
+      filter: blur(0);
+    }
+    /* Tách ra bay lướt ra ngoài */
+    88% {
+      opacity: 0;
+      transform: translate(-180px, -20px) rotate(12deg) scale(0.65);
+      filter: blur(4px);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-180px, -20px) rotate(12deg) scale(0.65);
+      filter: blur(4px);
+    }
   }
 
-  /* 3. Badge with me hi: từ bên phải lượn gió bay vào liên tục, mượt mà */
-  @keyframes windFromRight {
+  /* 3. Badge with me hi: bay vào từ bên phải -> dừng 3.5s -> bay ra -> lặp lại */
+  @keyframes loopFromRight {
     0% {
       opacity: 0;
       transform: translate(180px, 20px) rotate(-12deg) scale(0.65);
       filter: blur(4px);
     }
-    25% {
+    7% {
       opacity: 0.85;
     }
-    100% {
+    21.5% {
       opacity: 1;
       transform: translate(0, 0) rotate(0deg) scale(1);
       filter: blur(0);
     }
+    /* Dừng hoàn chỉnh 3.5s */
+    71.5% {
+      opacity: 1;
+      transform: translate(0, 0) rotate(0deg) scale(1);
+      filter: blur(0);
+    }
+    /* Tách ra bay lướt ra ngoài */
+    88% {
+      opacity: 0;
+      transform: translate(180px, 20px) rotate(-12deg) scale(0.65);
+      filter: blur(4px);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(180px, 20px) rotate(-12deg) scale(0.65);
+      filter: blur(4px);
+    }
   }
 
-  /* 4. Dòng chữ shop đồ chơi: từ dưới lượn gió bay lên liên tục, mượt mà */
-  @keyframes windFromBottom {
+  /* 4. Dòng chữ shop đồ chơi: bay vào từ dưới -> dừng 3.5s -> bay ra -> lặp lại */
+  @keyframes loopFromBottom {
     0% {
       opacity: 0;
       transform: translate(25px, 140px) rotate(10deg) scale(0.65);
       filter: blur(4px);
     }
-    25% {
+    7% {
       opacity: 0.85;
     }
-    100% {
+    21.5% {
       opacity: 1;
       transform: translate(0, 0) rotate(0deg) scale(1);
       filter: blur(0);
     }
-  }
-
-  @keyframes mergePulse {
-    0% {
-      transform: scale(1);
-      box-shadow: var(--shadow);
+    /* Dừng hoàn chỉnh 3.5s */
+    71.5% {
+      opacity: 1;
+      transform: translate(0, 0) rotate(0deg) scale(1);
+      filter: blur(0);
     }
-    50% {
-      transform: scale(1.04);
-      box-shadow: 0 10px 28px rgba(17,17,17,0.18), 0 0 20px rgba(255,255,255,0.7);
+    /* Tách ra bay lướt ra ngoài */
+    88% {
+      opacity: 0;
+      transform: translate(25px, 140px) rotate(10deg) scale(0.65);
+      filter: blur(4px);
     }
     100% {
-      transform: scale(1);
-      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translate(25px, 140px) rotate(10deg) scale(0.65);
+      filter: blur(4px);
     }
   }
+
   /* ---- Identity ---- */
   .identity{
     text-align:center;
